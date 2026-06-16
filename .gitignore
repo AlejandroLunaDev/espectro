@@ -23,6 +23,7 @@ coverage/
 .turbo/
 **/.turbo/
 mcp.json
+.mcp.json
 
 # Logs
 *.log
