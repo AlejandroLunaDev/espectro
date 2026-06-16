@@ -23,6 +23,14 @@ coverage/
 .turbo/
 **/.turbo/
 mcp.json
+.mcp.json
+
+# Python data pipeline
+data-pipeline/data/
+data-pipeline/.venv/
+data-pipeline/venv/
+**/__pycache__/
+*.pyc
 
 # Logs
 *.log
