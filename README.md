@@ -1,8 +1,6 @@
-# Panel de Datos Públicos — App BiT (B2G)
+# Espectro — Plataforma B2G de Inclusión Digital
 
-**Equipo 69**
-
-Este repositorio contiene el código fuente y la documentación para la plataforma **BiT (Business to Government)**. Una herramienta de decisión impulsada por IA para gestores públicos que cruza datos geográficos de conectividad con indicadores sociales públicos.
+Este repositorio contiene el código fuente y la documentación de **Espectro**, una plataforma B2G (Business to Government). Una herramienta de decisión impulsada por IA para gestores públicos que cruza datos geográficos de conectividad con indicadores sociales públicos.
 
 ## Stack Tecnológico
 
