@@ -59,3 +59,43 @@ export async function embedText(input) {
 
   throw new Error('OpenRouter embeddings: agotados los reintentos por rate limit (429)');
 }
+
+/**
+ * Chat completion via the pinned OpenRouter model (CHAT_MODEL).
+ * `messages` is the standard [{role, content}] array. Retries on 429 like
+ * embedText. Returns the assistant message text.
+ */
+export async function chatCompletion(messages, { temperature = 0.3 } = {}) {
+  const apiKey = requireApiKey();
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
+    const res = await fetch(`${env.OPENROUTER_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ model: env.CHAT_MODEL, messages, temperature }),
+    });
+
+    if (res.status === 429 && attempt < MAX_RETRIES) {
+      const retryAfter = Number(res.headers.get('retry-after')) || 2 ** attempt;
+      await sleep(retryAfter * 1000);
+      continue;
+    }
+
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`OpenRouter chat ${res.status}: ${body}`);
+    }
+
+    const json = await res.json();
+    const content = json?.choices?.[0]?.message?.content;
+    if (typeof content !== 'string' || content.length === 0) {
+      throw new Error('OpenRouter no devolvio una respuesta de chat valida');
+    }
+    return content;
+  }
+
+  throw new Error('OpenRouter chat: agotados los reintentos por rate limit (429)');
+}

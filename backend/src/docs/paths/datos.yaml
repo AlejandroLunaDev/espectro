@@ -1,0 +1,82 @@
+paths:
+  /api/v1/datos:
+    post:
+      tags:
+        - Datos
+      summary: Consulta IA en lenguaje natural
+      description: >
+        Recibe una pregunta en lenguaje natural como la haria un gestor publico,
+        recupera contexto documental (RAG/pgvector) y los datos de riesgo por
+        region (riesgo_regiao), y devuelve una respuesta generada por el agente
+        de IA "BiT" via OpenRouter. Es apoyo a la decision, no decision automatica.
+      operationId: postDatos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pregunta
+              properties:
+                pregunta:
+                  type: string
+                  minLength: 3
+                  maxLength: 1000
+                  example: ¿Que zonas tienen mayor riesgo de exclusion digital y por que?
+      responses:
+        '200':
+          description: Respuesta del agente de IA
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pregunta:
+                    type: string
+                    example: ¿Que zonas tienen mayor riesgo de exclusion digital y por que?
+                  respuesta:
+                    type: string
+                    description: Respuesta en lenguaje natural generada por la IA.
+                  fuentes:
+                    type: array
+                    description: Chunks de contexto documental usados (RAG).
+                    items:
+                      type: object
+                      properties:
+                        fuente:
+                          type: string
+                          example: score_metodologia
+                        seccion:
+                          type: string
+                          example: 4. Score de riesgo de exclusion digital
+                        similitud:
+                          type: number
+                          example: 0.55
+                  regiones_consideradas:
+                    type: integer
+                    example: 27
+                  aviso:
+                    type: string
+                    example: Apoyo a la decision, no decision automatica.
+        '400':
+          description: Pregunta invalida o ausente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: BAD_REQUEST
+                      message:
+                        type: string
+                        example: La pregunta debe tener al menos 3 caracteres
+                      statusCode:
+                        type: integer
+                        example: 400
+        '500':
+          description: Error interno (ej. fallo al llamar a OpenRouter)

@@ -15,6 +15,9 @@ const envSchema = z.object({
   // Pinned to the only free embedding model on OpenRouter (2048 dims).
   // Changing it requires re-embedding documents_vectors and altering the column.
   EMBEDDING_MODEL: z.string().min(1).default('nvidia/llama-nemotron-embed-vl-1b-v2:free'),
+  // LLM that writes the conversational answer in POST /datos. Free model;
+  // swappable for any other OpenRouter chat model if rate limits get in the way.
+  CHAT_MODEL: z.string().min(1).default('openai/gpt-oss-120b:free'),
 });
 
 const parsed = envSchema.safeParse(process.env);
